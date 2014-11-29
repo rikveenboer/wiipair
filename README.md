@@ -1,0 +1,1 @@
+Based on <https://www.richlynch.com/2009/11/18/permanently-pair-wiimotewii-balance-board/>.

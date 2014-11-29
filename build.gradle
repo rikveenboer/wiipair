@@ -1,0 +1,60 @@
+apply plugin: 'cpp'
+apply plugin: 'maven'
+apply plugin: 'eclipse'
+
+group = 'com.github.boukefalos'
+archivesBaseName = 'wiipair'
+version = '0.1'
+
+task wrapper(type: Wrapper) {
+	gradleVersion = '1.12'
+}
+uploadArchives {
+    repositories.mavenDeployer {
+        repository(url: uri('.maven'))
+    }
+}
+
+model {
+	platforms {
+		windows_i386 {
+			architecture 'i386'
+			operatingSystem 'windows'
+		}
+		windows_amd64 {
+			architecture 'amd64'
+			operatingSystem 'windows'
+		}
+	}
+	toolChains {
+		visualCpp(VisualCpp)
+	}
+	repositories {
+		libs(PrebuiltLibraries) {
+			bthprops {
+				binaries.withType(StaticLibraryBinary) {
+					staticLibraryFile = file("lib/${targetPlatform.name}/bthprops.lib")
+				}
+			}
+		}
+	}
+}
+
+executables  {
+	main {
+		baseName project.archivesBaseName
+	}
+	all {
+		binaries.all {
+			lib library: 'bthprops', linkage: 'static'
+		}
+	}
+}
+
+tasks.withType(Upload) {
+	repositories {
+		mavenDeployer {
+			repository(url: uri('.maven'))
+		}
+	}
+}
